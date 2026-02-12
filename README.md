@@ -4,7 +4,9 @@
 
 A tool for converting Websites, Images, and Office Documents (Word, Excel, PPT) to high-quality PDF. Runs on both **Windows** and **Linux** (Native or Docker).
 
-<p align="center">![Demo All To PDF](output.gif)</p>
+<p align="center">
+  <img src="./output.gif" alt="Demo All To PDF" style="max-width:100%;height:auto;display:block;margin:0 auto;" />
+</p>
 
 ## 🌟 Key Features
 - **Cross-Platform**: Automatically detects the OS to select the best conversion engine.
