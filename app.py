@@ -106,7 +106,9 @@ def windows_office_to_pdf(input_path, output_path, ext):
     return False
 
 async def convert_file_to_pdf(input_path, output_path):
-    ext = Path(input_path).suffix.lower()
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    ext = input_path.suffix.lower()
     try:
         if ext in ['.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp']:
             image = Image.open(input_path)
@@ -117,7 +119,7 @@ async def convert_file_to_pdf(input_path, output_path):
         # Windows logic
         if os.name == 'nt':
             loop = asyncio.get_event_loop()
-            return await loop.run_in_executor(None, windows_office_to_pdf, input_path, output_path, ext)
+            return await loop.run_in_executor(None, windows_office_to_pdf, str(input_path), str(output_path), ext)
         
         # Linux/Docker logic (LibreOffice)
         else:
@@ -137,7 +139,7 @@ async def convert_file_to_pdf(input_path, output_path):
             if stdout: print(f"[LibO Out]: {stdout.decode()}")
             if stderr: print(f"[LibO Err]: {stderr.decode()}")
 
-            gen = OUTPUT_DIR / (Path(input_path).stem + ".pdf")
+            gen = OUTPUT_DIR / (input_path.stem + ".pdf")
             if gen.exists():
                 if gen != output_path:
                     if output_path.exists(): os.remove(output_path)
@@ -169,7 +171,10 @@ async def convert_url(background_tasks: BackgroundTasks, url: str = Form(...)):
     success = await convert_web_to_pdf(url, output_path)
     if success:
         background_tasks.add_task(cleanup_files, None, str(output_path))
-        return FileResponse(output_path, filename="website.pdf", media_type='application/pdf')
+        # Clean URL filename
+        safe_filename = re.sub(r'[\\/*?:"<>|]', '_', url.split('//')[-1])[:50]
+        if not safe_filename.endswith('.pdf'): safe_filename += '.pdf'
+        return FileResponse(output_path, filename=safe_filename, media_type='application/pdf')
     raise HTTPException(status_code=500, detail="Conversion failed")
 
 @app.post("/convert-file")
@@ -181,7 +186,10 @@ async def convert_upload(background_tasks: BackgroundTasks, file: UploadFile = F
     success = await convert_file_to_pdf(str(input_path), str(output_path))
     background_tasks.add_task(cleanup_files, str(input_path), str(output_path))
     if success:
-        return FileResponse(output_path, filename=f"{Path(file.filename).stem}.pdf", media_type='application/pdf')
+        # Clean original filename
+        original_name = Path(file.filename).stem
+        safe_name = re.sub(r'[\\/*?:"<>|]', '_', original_name)
+        return FileResponse(output_path, filename=f"{safe_name}.pdf", media_type='application/pdf')
     raise HTTPException(status_code=500, detail="Conversion failed (Docker uses LibreOffice)")
 
 if __name__ == "__main__":

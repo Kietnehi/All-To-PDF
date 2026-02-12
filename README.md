@@ -1,67 +1,85 @@
 # 📄 All-to-PDF Converter (Multi-Platform)
 
-Công cụ chuyển đổi Website, Hình ảnh và Tài liệu Office (Word, Excel, PPT) sang PDF chất lượng cao. Hỗ trợ chạy trên cả **Windows** và **Linux** (Native hoặc Docker).
+A tool for converting Websites, Images, and Office Documents (Word, Excel, PPT) to high-quality PDF. Runs on both **Windows** and **Linux** (Native or Docker).
 
-## 🌟 Tính năng nổi bật
-- **Đa nền tảng**: Tự động nhận diện OS để chọn engine chuyển đổi tốt nhất.
-- **Windows Optimized**: Sử dụng trực tiếp Microsoft Office (Word, Excel, PowerPoint) nếu máy có sẵn.
-- **Linux/Docker Ready**: Tích hợp LibreOffice cho các môi trường server hoặc container.
-- **Website to PDF**: Tự động cuộn trang (Auto-scroll) để xử lý Lazy Loading ảnh, đảm bảo không mất hình.
-- **Giao diện Web**: Xây dựng trên FastAPI & Bootstrap 5, hỗ trợ kéo thả file và hiển thị trạng thái xử lý.
+![Demo All To PDF](output.gif)
+
+## 🌟 Key Features
+- **Cross-Platform**: Automatically detects the OS to select the best conversion engine.
+- **Windows Optimized**: Directly uses Microsoft Office (Word, Excel, PowerPoint) if available on the machine.
+- **Linux/Docker Ready**: Integrates LibreOffice for server or container environments.
+- **Website to PDF**: Auto-scrolls the page to handle lazy-loading images, ensuring no image is missing.
+- **Web Interface**: Built with FastAPI & Bootstrap 5, supports drag-and-drop file upload and displays processing status.
 
 ---
 
-## 🚀 Hướng dẫn Cài đặt & Chạy
+## 📸 Screenshots
 
-### Cách 1: Chạy bằng Docker (Khuyên dùng - Nhanh nhất)
-Bạn không cần cài đặt Python hay LibreOffice trên máy thật. Docker sẽ tự động đóng gói tất cả.
+### 🌐 Web to PDF - Website to PDF Conversion Interface
+An interface that allows users to enter any website URL to convert it to PDF. Supports auto-scrolling to load all content, including lazy-loaded images. The interface shows the processing progress and allows downloading the resulting PDF file.
+![Web to PDF Interface](image/web_to_pdf.png)
+
+### 📁 File to PDF - File to PDF Conversion Interface
+A simple and intuitive drag-and-drop file interface. Supports converting multiple Office document formats such as Word (.doc, .docx), Excel (.xls, .xlsx), PowerPoint (.ppt, .pptx), and various image formats to high-quality PDF. Users can drag and drop or click to select the files for conversion.
+![File to PDF Interface](image/file_to_pdf.png)
+
+### 🐳 Docker Logs - Logs when running Docker
+An illustration of the application startup process using Docker Compose. The container is automatically built with all necessary dependencies (Python, LibreOffice, Playwright, Chromium). Logs show the FastAPI server running and ready to accept requests on port 8000.
+![Docker Logs](image/logs_docker.png)
+
+---
+
+## 🚀 Installation & Running Guide
+
+### Method 1: Run with Docker (Recommended - Fastest)
+You don't need to install Python or LibreOffice on your host machine. Docker will automatically package everything.
 ```bash
 docker-compose up --build
 ```
-Sau đó truy cập: `http://localhost:8000`
+Then access: `http://localhost:8000`
 
-### Cách 2: Chạy trực tiếp trên máy (Native)
+### Method 2: Run Natively on Machine
 
-**1. Cài đặt Python Dependencies:**
+**1. Install Python Dependencies:**
 ```bash
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-**2. Yêu cầu hệ thống:**
-- **Windows**: Ưu tiên cài sẵn Microsoft Office. Nếu không có, hãy cài LibreOffice.
-- **Linux**: Cài đặt LibreOffice (`sudo apt install libreoffice`).
+**2. System Requirements:**
+- **Windows**: Microsoft Office installed is preferred. If not available, install LibreOffice.
+- **Linux**: Install LibreOffice (`sudo apt install libreoffice`).
 
-**3. Khởi động:**
+**3. Start the application:**
 ```bash
 python app.py
 ```
-Truy cập: `http://localhost:8000`
+Access: `http://localhost:8000`
 
 ---
 
-## 🔍 Cơ chế hoạt động theo OS
+## 🔍 OS-based Operating Mechanism
 
-| Thành phần | Windows (Native) | Linux / Docker |
+| Component | Windows (Native) | Linux / Docker |
 | :--- | :--- | :--- |
 | **Website** | Playwright (Chromium) | Playwright (Chromium) |
 | **Office Docs** | **Microsoft Office** (via pywin32) | **LibreOffice** (soffice) |
-| **Hình ảnh** | Pillow (PIL) | Pillow (PIL) |
+| **Images** | Pillow (PIL) | Pillow (PIL) |
 
 ---
 
-## 🛠 Cấu trúc dự án
-- `app.py`: Server FastAPI & Logic chuyển đổi thông minh.
-- `templates/index.html`: Giao diện người dùng Web.
-- `Dockerfile` & `docker-compose.yml`: Cấu hình container hóa.
-- `uploads/` & `outputs/`: Thư mục tạm (Tự động dọn dẹp sau 60 giây).
+## 🛠 Project Structure
+- `app.py`: FastAPI server & Intelligent conversion logic.
+- `templates/index.html`: Web user interface.
+- `Dockerfile` & `docker-compose.yml`: Containerization configuration.
+- `uploads/` & `outputs/`: Temporary directories (automatically cleaned after 60 seconds).
 
 ---
 
-## ⚠️ Lưu ý quan trọng
-- **Browser**: Nếu chạy lần đầu báo lỗi thiếu trình duyệt, hãy chạy `playwright install chromium`.
-- **Dọn dẹp**: Hệ thống tự động xóa file upload và file PDF kết quả sau 1 phút để bảo mật và tiết kiệm dung lượng.
-- **Docker**: Bản Docker đã cài sẵn LibreOffice bên trong, rất tiện lợi cho việc deploy lên Server Linux.
+## ⚠️ Important Notes
+- **Browser**: If you encounter a missing browser error on the first run, execute `playwright install chromium`.
+- **Cleanup**: The system automatically deletes uploaded files and resulting PDFs after 1 minute for security and storage efficiency.
+- **Docker**: The Docker image comes with LibreOffice pre-installed, making it very convenient for deployment on Linux servers.
 
 ---
 
@@ -73,14 +91,14 @@ Truy cập: `http://localhost:8000`
 
 <p align="center">
   <a href="https://github.com/Kietnehi">
-    <img src="https://github.com/Kietnehi.png" width="140" height="140" style="border-radius: 50%; border: 4px solid #A371F7;" alt="Avatar Trương Phú Kiệt"/>
+    <img src="https://github.com/Kietnehi.png" width="140" height="140" style="border-radius: 50%; border: 4px solid #A371F7;" alt="Avatar Truong Phu Kiet"/>
   </a>
 </p>
 
-<h3>🚀 Trương Phú Kiệt</h3>
+<h3>🚀 Truong Phu Kiet</h3>
 
 <a href="https://github.com/Kietnehi">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=236AD3&background=00000000&center=true&vCenter=true&width=435&lines=Student+@+Sai+Gon+University;Fullstack+Dev+%26+AI+Researcher;All+To+PDF" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&weight=500&size=22&pause=800&color=36BCF7&center=true&vCenter=true&width=500&lines=Welcome+to+my+GitHub!;I'm+an+AI+Lover;AI+Research+Enthusiast;Building+All+To+PDF" alt="Typing SVG" />
 </a>
 
 <br/><br/>
@@ -99,7 +117,6 @@ Truy cập: `http://localhost:8000`
   </a>
 </p>
 
-
 <h3>🛠 Tech Stack</h3>
 <p align="center">
   <a href="https://skillicons.dev">
@@ -109,12 +126,12 @@ Truy cập: `http://localhost:8000`
 
 <br/>
 
-<h3>🌟 AI Model Demos & Experiments</h3>
+<h3>🌟 All To PDF Converter</h3>
 <p align="center">
-  <a href="https://github.com/Kietnehi/n8n_quick_tunnels">
-    <img src="https://img.shields.io/github/stars/Kietnehi/n8n_quick_tunnels?style=for-the-badge&color=yellow" alt="Stars"/>
-    <img src="https://img.shields.io/github/forks/Kietnehi/n8n_quick_tunnels?style=for-the-badge&color=orange" alt="Forks"/>
-    <img src="https://img.shields.io/github/issues/Kietnehi/n8n_quick_tunnels?style=for-the-badge&color=red" alt="Issues"/>
+  <a href="https://github.com/Kietnehi/All-To-PDF">
+    <img src="https://img.shields.io/github/stars/Kietnehi/All-To-PDF?style=for-the-badge&color=yellow" alt="Stars"/>
+    <img src="https://img.shields.io/github/forks/Kietnehi/All-To-PDF?style=for-the-badge&color=orange" alt="Forks"/>
+    <img src="https://img.shields.io/github/issues/Kietnehi/All-To-PDF?style=for-the-badge&color=red" alt="Issues"/>
   </a>
 </p>
 
