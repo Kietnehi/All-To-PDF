@@ -180,6 +180,27 @@ http://localhost:8000
 - `uploads/` & `outputs/`: Temporary directories (automatically cleaned after 60 seconds).
 - `extracted/`: Directory for PDF extraction results (cleaned after 2 minutes).
 
+```bash
+All_To_PDF/
+├── app.py
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── templates/
+│   └── index.html
+├── uploads/
+├── outputs/
+├── extracted/
+├── image/
+│   ├── web_to_pdf.png
+│   ├── file_to_pdf.png
+│   ├── logs_docker.png
+│   ├── options_docling_unstructured.png
+│   └── result_images.png
+├── EXTRACTION_GUIDE.md
+├── TESSERACT_INSTALL.md
+└── README.md
+```
 ---
 
 ## 📤 NEW: PDF Content Extraction
