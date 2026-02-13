@@ -32,6 +32,23 @@ A simple and intuitive drag-and-drop file interface. Supports converting multipl
 An illustration of the application startup process using Docker Compose. The container is automatically built with all necessary dependencies (Python, LibreOffice, Playwright, Chromium). Logs show the FastAPI server running and ready to accept requests on port 8000.
 ![Docker Logs](image/logs_docker.png)
 
+### ⚙️ PDF Extraction Options - Extraction Method Selection
+An interface that allows users to choose between **Docling** and **Unstructured** for PDF extraction. 
+
+* **Docling:** Nhanh, chính xác, hỗ trợ bảng phức tạp.
+* **Unstructured:** Sử dụng YOLOX AI, phù hợp cho layout phức tạp.
+
+![Extraction Options](image/options_docling_unstructured.png)
+
+---
+
+### 🖼️ Extraction Results - Visualizing Extracted Content
+A preview of the extracted results showing images, tables, and text captured from the PDF. 
+
+> **Note:** Users can view high-quality extracted images and structured data directly in the browser.
+
+![Extraction Results](image/result_images.png)
+
 ---
 
 ## 🚀 Installation & Running Guide
