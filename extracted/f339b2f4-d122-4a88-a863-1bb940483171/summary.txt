@@ -1,0 +1,17 @@
+============================================================
+PDF EXTRACTION SUMMARY (Unstructured Method)
+============================================================
+
+Source PDF: f339b2f4-d122-4a88-a863-1bb940483171_arxiv.org_pdf_1706.03762.pdf
+Extraction ID: f339b2f4-d122-4a88-a863-1bb940483171
+Method: Unstructured
+Strategy: Hi-Res (with Tesseract)
+
+📄 Text Files: 2
+📊 Tables Extracted: 4
+🖼️  Images Extracted: 7
+
+Directory Structure:
+  text/     -> Markdown & plain text
+  tables/   -> CSV, Excel & HTML files
+  images/   -> PNG/JPG images

@@ -13,6 +13,7 @@ A tool for converting Websites, Images, and Office Documents (Word, Excel, PPT) 
 - **Windows Optimized**: Directly uses Microsoft Office (Word, Excel, PowerPoint) if available on the machine.
 - **Linux/Docker Ready**: Integrates LibreOffice for server or container environments.
 - **Website to PDF**: Auto-scrolls the page to handle lazy-loading images, ensuring no image is missing.
+- **PDF Content Extraction**: Powered by **Docling** to extract structured text, tables (Excel/CSV), and images from PDF files without complex system dependencies.
 - **Web Interface**: Built with FastAPI & Bootstrap 5, supports drag-and-drop file upload and displays processing status.
 
 ---
@@ -60,6 +61,88 @@ python app.py
 ```
 Access: `http://localhost:8000`
 
+
+---
+
+## 💻 Method 3: Run Natively (Recommended for Development)
+
+### Step 1: Create and Activate a Virtual Environment (Venv)
+
+Inside the `All_To_PDF` folder, run:
+
+```bash
+python -m venv venv
+source venv/Scripts/activate
+```
+
+> On Windows PowerShell:
+```powershell
+venv\Scripts\activate
+```
+
+---
+
+### Step 2: Install Everything in One Command
+
+Copy and paste the line below into your terminal.  
+It will automatically install the latest compatible versions of all required dependencies:
+
+```bash
+pip install fastapi uvicorn python-multipart playwright pillow nest_asyncio jinja2 pywin32 docling pandas openpyxl httpx unstructured[all-docs]
+```
+
+---
+
+### Step 3: Install Browser for Playwright
+
+Since this project uses `playwright`, you must install Chromium:
+
+```bash
+playwright install chromium
+```
+
+Without this step, the Web-to-PDF feature will fail when running the application.
+
+---
+
+### Step 4: Start the Application
+
+```bash
+python app.py
+```
+
+Then open:
+
+```
+http://localhost:8000
+```
+
+---
+
+## 🎯 Why You SHOULD Use a Virtual Environment
+
+1. **Clean Setup**  
+   The virtual environment installs the newest compatible versions of libraries.  
+   Errors like:
+
+   ```
+   ImportError: cannot import name 'AutoProcessor'
+   ```
+
+   will disappear completely.
+
+2. **Isolation**  
+   If you later install another tool that requires older libraries, it will NOT break your `All_To_PDF` project.
+
+3. **One-Time Configuration**  
+   After setup, you only need:
+
+   ```bash
+   source venv/Scripts/activate
+   ```
+
+   and you're ready to work — no reinstalling required.
+
 ---
 
 ## 🔍 OS-based Operating Mechanism
@@ -69,14 +152,94 @@ Access: `http://localhost:8000`
 | **Website** | Playwright (Chromium) | Playwright (Chromium) |
 | **Office Docs** | **Microsoft Office** (via pywin32) | **LibreOffice** (soffice) |
 | **Images** | Pillow (PIL) | Pillow (PIL) |
+| **PDF Extraction**| **Docling** / Unstructured | **Docling** / Unstructured |
 
 ---
 
 ## 🛠 Project Structure
-- `app.py`: FastAPI server & Intelligent conversion logic.
+- `app.py`: FastAPI server, Intelligent conversion & PDF extraction logic (Docling/Unstructured).
 - `templates/index.html`: Web user interface.
 - `Dockerfile` & `docker-compose.yml`: Containerization configuration.
 - `uploads/` & `outputs/`: Temporary directories (automatically cleaned after 60 seconds).
+- `extracted/`: Directory for PDF extraction results (cleaned after 2 minutes).
+
+---
+
+## 📤 NEW: PDF Content Extraction
+
+### Features
+Extract comprehensive content from PDF files using powerful extraction engines:
+- 📝 **Text**: High-fidelity Markdown and plain text formats.
+- 📊 **Tables**: Multi-format extraction (CSV and Excel `.xlsx`) with structure preservation.
+- 🖼️ **Images**: Individual image extraction saved as high-quality PNGs.
+- 🔍 **View Mode**: Preview extracted text, tables, and images directly in your browser before downloading.
+
+### Extraction Methods
+
+#### 1️⃣ Docling (Default - Recommended)
+- ✅ **No extra dependencies** - Works out-of-the-box on Windows
+- ⚡ Fast and accurate
+- 📊 Excellent table structure preservation
+- 🎯 Best for: Digital PDFs with complex tables
+
+#### 2️⃣ Unstructured (Advanced - AI Model)
+- 🤖 Uses YOLOX AI model for layout detection
+- 📑 Exports tables as HTML + CSV + Excel
+- 🎯 Best for: Complex document layouts, scanned PDFs
+- ⚠️ **Recommendation**: Install Tesseract for best results with tables and images
+  - Without Tesseract: Limited extraction (text only, fewer tables/images)
+  - With Tesseract: Full hi-res extraction (like the notebook demo)
+
+### How to Use
+1. Navigate to the **"Extract from PDF"** tab.
+2. Upload your PDF file (drag & drop or click to select).
+3. **Choose extraction method**:
+   - **Docling** (Default): Fast, no dependencies
+   - **Unstructured**: AI-powered, better for complex layouts
+4. Click **"View directly"** to preview results in browser
+5. Or click **"Download ZIP"** for the complete package
+
+### Output Structure
+```
+extracted_result.zip
+├── text/
+│   ├── extracted_text.md      (Markdown format with structure)
+│   └── extracted_text.txt     (Plain text for easy searching)
+├── tables/
+│   ├── table_1.csv            (Raw data)
+│   ├── table_1.xlsx           (Formatted for Excel)
+│   ├── table_1.html           (HTML format - Unstructured only)
+│   └── ...
+├── images/
+│   ├── image_1_page_3.png     (Extracted visual assets)
+│   └── ...
+└── summary.txt                (Detailed extraction report)
+```
+
+### Requirements & Tech
+- **Docling**: Primary engine, works without system dependencies
+- **Unstructured**: Optional AI-powered method
+  - ✅ Works without dependencies but with **limited extraction**
+  - 🔥 **Install Tesseract for full power**: Tables, images, and hi-res layout detection
+- **Pure Python**: Works on Windows without Poppler
+- **Automatic Cleanup**: Files deleted after 10 minutes (view) or 2 minutes (download)
+
+### Recommended: Tesseract OCR (for Unstructured full features)
+To unlock **full extraction capabilities** of Unstructured (as shown in the notebook):
+
+**Quick Install:**
+
+**Windows:** Download from https://github.com/UB-Mannheim/tesseract/wiki → Add to PATH
+
+**Linux:** `sudo apt install tesseract-ocr`
+
+**Docker:** Already included
+
+**📘 Detailed guide:** See [TESSERACT_INSTALL.md](TESSERACT_INSTALL.md) for step-by-step instructions
+
+**After installing Tesseract:** Restart the app, then Unstructured will automatically use hi-res strategy for better table and image extraction! 🎉
+
+For detailed instructions, see [EXTRACTION_GUIDE.md](EXTRACTION_GUIDE.md)
 
 ---
 
@@ -126,6 +289,9 @@ Access: `http://localhost:8000`
   <a href="https://skillicons.dev">
     <img src="https://skillicons.dev/icons?i=docker,python,react,nodejs,mongodb,git,fastapi,github,pytorch&theme=light" alt="My Skills"/>
   </a>
+</p>
+<p align="center">
+  <b>Core Libraries:</b> FastAPI, Playwright, Docling, Unstructured, PyWin32, Pillow, Pandas
 </p>
 
 <br/>

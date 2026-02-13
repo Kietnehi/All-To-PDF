@@ -6,3 +6,11 @@ pillow
 nest_asyncio
 jinja2
 pywin32; sys_platform == 'win32'
+docling
+pandas
+openpyxl
+httpx
+unstructured[all-docs]
+unstructured-inference
+pdf2image
+pytesseract

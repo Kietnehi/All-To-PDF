@@ -1,0 +1,5 @@
+﻿0,1,2
+Zhu et al. (2013) [40] Dyer et al. (2016) [8],"WSJ only, discriminative WSJ only, discriminative",90.4 91.7
+Transformer (4 layers),"WSJ only, discriminative",91.3
+Zhu et al. (2013) [40],semi-supervised,91.3
+Vinyals (2014) [37] Transformer (4 layers),semi-supervised semi-supervised,92.7

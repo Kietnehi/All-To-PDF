@@ -45,6 +45,9 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link ms-3" id="pills-file-tab" data-bs-toggle="pill" data-bs-target="#pills-file" type="button" role="tab"><i class="fas fa-file-upload me-2"></i>File to PDF</button>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link ms-3" id="pills-extract-tab" data-bs-toggle="pill" data-bs-target="#pills-extract" type="button" role="tab"><i class="fas fa-file-export me-2"></i>Extract from PDF</button>
+                </li>
             </ul>
 
             <div class="tab-content" id="pills-tabContent">
@@ -89,6 +92,69 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Extract from PDF -->
+                <div class="tab-pane fade" id="pills-extract" role="tabpanel">
+                    <div class="card p-4">
+                        <form id="extractForm">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Chọn file PDF để trích xuất nội dung</label>
+                                <div class="drop-zone" id="dropZoneExtract">
+                                    <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+                                    <h5>Kéo thả file PDF vào đây hoặc click để chọn</h5>
+                                    <p class="text-muted mb-2">Tự động trích xuất:</p>
+                                    <div class="d-flex justify-content-center gap-3 mb-0">
+                                        <span class="badge bg-success"><i class="fas fa-file-alt me-1"></i>Text</span>
+                                        <span class="badge bg-warning text-dark"><i class="fas fa-table me-1"></i>Tables</span>
+                                        <span class="badge bg-info"><i class="fas fa-image me-1"></i>Images</span>
+                                    </div>
+                                    <input type="file" id="extractInput" name="file" accept=".pdf" class="d-none" required>
+                                </div>
+                                <div id="extractFileInfo" class="mt-3 text-center d-none">
+                                    <span class="badge bg-danger p-2"><i class="fas fa-file-pdf me-2"></i><span id="extractFileName"></span></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Method Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold"><i class="fas fa-cog me-2"></i>Phương pháp trích xuất</label>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-inline p-3 border rounded w-100">
+                                            <input class="form-check-input" type="radio" name="extractMethod" id="methodDocling" value="docling" checked>
+                                            <label class="form-check-label w-100" for="methodDocling">
+                                                <strong>Docling</strong> <span class="badge bg-primary">Mặc định</span>
+                                                <small class="d-block text-muted">Nhanh, chính xác, hỗ trợ tốt bảng phức tạp</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-inline p-3 border rounded w-100">
+                                            <input class="form-check-input" type="radio" name="extractMethod" id="methodUnstructured" value="unstructured">
+                                            <label class="form-check-label w-100" for="methodUnstructured">
+                                                <strong>Unstructured</strong> <span class="badge bg-secondary">AI Model</span>
+                                                <small class="d-block text-muted mt-1">
+                                                    YOLOX AI, HTML tables
+                                                    <br>
+                                                    <span class="text-warning">💡 Install Tesseract for best results</span>
+                                                </small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="button" id="viewExtractBtn" class="btn btn-primary btn-lg me-2">
+                                    <i class="fas fa-eye me-2"></i>Xem kết quả trực tiếp
+                                </button>
+                                <button type="button" id="downloadExtractBtn" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-download me-2"></i>Tải về ZIP
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-5 text-center text-muted">
@@ -105,8 +171,14 @@
     const fileInput = document.getElementById('fileInput');
     const fileInfo = document.getElementById('fileInfo');
     const fileName = document.getElementById('fileName');
+    
+    // Extract form elements
+    const dropZoneExtract = document.getElementById('dropZoneExtract');
+    const extractInput = document.getElementById('extractInput');
+    const extractFileInfo = document.getElementById('extractFileInfo');
+    const extractFileName = document.getElementById('extractFileName');
 
-    // Handle Drop Zone
+    // Handle Drop Zone for File to PDF
     dropZone.onclick = () => fileInput.click();
     
     fileInput.onchange = (e) => {
@@ -128,8 +200,41 @@
         }
     };
 
+    // Handle Drop Zone for Extract PDF
+    dropZoneExtract.onclick = () => extractInput.click();
+    
+    extractInput.onchange = (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                alert('Vui lòng chọn file PDF!');
+                e.target.value = '';
+                return;
+            }
+            extractFileName.innerText = file.name;
+            extractFileInfo.classList.remove('d-none');
+        }
+    };
+
+    dropZoneExtract.ondragover = (e) => { e.preventDefault(); dropZoneExtract.classList.add('active'); };
+    dropZoneExtract.ondragleave = () => { dropZoneExtract.classList.remove('active'); };
+    dropZoneExtract.ondrop = (e) => {
+        e.preventDefault();
+        dropZoneExtract.classList.remove('active');
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (!file.name.toLowerCase().endsWith('.pdf')) {
+                alert('Vui lòng chọn file PDF!');
+                return;
+            }
+            extractInput.files = e.dataTransfer.files;
+            extractFileName.innerText = file.name;
+            extractFileInfo.classList.remove('d-none');
+        }
+    };
+
     // Handle Form Submissions
-    async function handleConvert(formId, endpoint) {
+    async function handleConvert(formId, endpoint, fileExtension = null) {
         const form = document.getElementById(formId);
         form.onsubmit = async (e) => {
             e.preventDefault();
@@ -150,7 +255,7 @@
                     
                     // Lấy tên file chuẩn từ header
                     const disposition = response.headers.get('content-disposition');
-                    let filename = 'converted.pdf';
+                    let filename = fileExtension ? `converted.${fileExtension}` : 'converted.pdf';
                     if (disposition && disposition.indexOf('filename=') !== -1) {
                         const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
                         const matches = filenameRegex.exec(disposition);
@@ -164,6 +269,16 @@
                     a.click();
                     a.remove();
                     window.URL.revokeObjectURL(url);
+                    
+                    // Show success message for extraction
+                    if (endpoint === '/extract-pdf') {
+                        const summary = response.headers.get('X-Extraction-Summary');
+                        if (summary) {
+                            setTimeout(() => {
+                                alert('✅ Trích xuất thành công!\n\n' + summary.replace(/,/g, '\n'));
+                            }, 500);
+                        }
+                    }
                 } else {
                     let errorMsg = 'Không thể chuyển đổi';
                     try {
@@ -187,8 +302,110 @@
         };
     }
 
+    // Special handler for extraction with view/download options
+    async function handleExtraction(mode) {
+        const form = document.getElementById('extractForm');
+        const fileInput = document.getElementById('extractInput');
+        
+        if (!fileInput.files.length) {
+            alert('Vui lòng chọn file PDF!');
+            return;
+        }
+        
+        // Get selected method
+        const methodRadios = document.getElementsByName('extractMethod');
+        let selectedMethod = 'docling';
+        for (const radio of methodRadios) {
+            if (radio.checked) {
+                selectedMethod = radio.value;
+                break;
+            }
+        }
+        
+        loading.style.display = 'flex';
+        
+        try {
+            const formData = new FormData(form);
+            formData.append('view_mode', mode);
+            formData.append('method', selectedMethod);
+            
+            const response = await fetch('/extract-pdf', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                if (mode === 'view') {
+                    // Parse JSON and redirect to view page
+                    const result = await response.json();
+                    if (result.success && result.view_url) {
+                        window.location.href = result.view_url;
+                        return;
+                    }
+                } else {
+                    // Download ZIP file
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    
+                    const disposition = response.headers.get('content-disposition');
+                    let filename = 'extracted.zip';
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        const matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) { 
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+                    
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    
+                    const summary = response.headers.get('X-Extraction-Summary');
+                    if (summary) {
+                        setTimeout(() => {
+                            alert('✅ Trích xuất thành công!\n\n' + summary.replace(/,/g, '\n'));
+                        }, 500);
+                    }
+                }
+            } else {
+                let errorMsg = 'Không thể trích xuất';
+                try {
+                    const text = await response.text();
+                    try {
+                        const err = JSON.parse(text);
+                        errorMsg = err.detail || errorMsg;
+                    } catch (e) {
+                        errorMsg = text || errorMsg;
+                    }
+                } catch (e) {
+                    errorMsg = 'Lỗi kết nối server';
+                }
+                alert('Lỗi: ' + errorMsg);
+            }
+        } catch (err) {
+            alert('Lỗi kết nối server: ' + err.message);
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
     handleConvert('urlForm', '/convert-url');
     handleConvert('fileForm', '/convert-file');
+    
+    // Prevent form submit for extract form (use buttons instead)
+    document.getElementById('extractForm').onsubmit = (e) => {
+        e.preventDefault();
+        return false;
+    };
+    
+    // Setup extraction buttons
+    document.getElementById('viewExtractBtn').onclick = () => handleExtraction('view');
+    document.getElementById('downloadExtractBtn').onclick = () => handleExtraction('download');
 </script>
 
 </body>

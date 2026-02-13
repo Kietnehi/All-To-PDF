@@ -40,3 +40,6 @@ To ensure security and low disk usage, the app implements a `BackgroundTasks` cl
 - **Entry Point**: `app.py`
 - **Port**: 8000
 - **Main Dependencies**: `fastapi`, `playwright`, `pywin32` (Windows), `LibreOffice` (Linux/Docker).
+ 
+
+ 
