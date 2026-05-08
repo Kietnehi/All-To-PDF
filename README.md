@@ -347,7 +347,7 @@ For detailed instructions, see [EXTRACTION_GUIDE.md](EXTRACTION_GUIDE.md)
   <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark" alt="Daily Quote"/>
 </p>
 <p align="center">
-<i>Thank you for stopping by! Don’t forget to give this repo a <b>⭐️ Star</b> if you find it useful..</i>
+<i>Thank you for stopping by! Don’t forget to give this repo a <b>⭐️ Star</b> if you find it useful...</i>
 </p>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=80&section=footer"/>
